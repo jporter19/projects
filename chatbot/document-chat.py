@@ -14,7 +14,8 @@ from langchain_community.document_loaders import YoutubeLoader
 from tkinter import filedialog as fd
 import re   # re is regular expressions for pattern matching
 
-
+st.page_link('B:/code/projects/chatbot/admin_2.py',label="Admin Page")
+st.page_link('pages/test2.py', label=":blue[test2 link]")
 #%% - this is a path to the primary database, each database can have multiple collections
 st.session_state.dbpath="b:\\python\\database\\booboo" # set the path to the DB
 if 'col_choice' not in st.session_state:  #initialize selection of a collection
