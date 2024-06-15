@@ -1,0 +1,7 @@
+# ignore all pdf files
+*.pdf
+venv/
+data/
+models/
+database/
+images/
