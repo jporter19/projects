@@ -1,19 +1,31 @@
 import streamlit as st
+if 'msg' not in st.session_state:
+    st.session_state = ''
 
 # Display a parameter
 @st.experimental_dialog("Message")
 def modal_dialog(var):
     st.write(var)
-modal_dialog("boy oh boy")
-
+    st.session_state.msg = "complete"
+    return "complete"
 
 # confirm or cancel
 @st.experimental_dialog("Confirmation")
 def confirm_msg(msg):
     st.write(msg)
-    st.button("Confirm")
-    st.button("Cancel")
-confirm_msg("Confirm Deletion?")
+    if st.button("Confirm",key='confirm1'):
+        return "Confirm"
+    if st.button("Cancel",key='cancel1'):
+        return "Cancel"
+
+if st.button("Say Hello",key='greeting'):
+    msg=modal_dialog("Hello")
+
+    st.write(msg)
+#if st.button("Confirm",key='confirm2'):
+#   msg = confirm_msg("Pleas e Confirm")
+#    st.write(msg)
+
 
 '''
 

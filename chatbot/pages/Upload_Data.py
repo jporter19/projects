@@ -8,7 +8,7 @@ from tkinter import filedialog as fd
 st.write(st.session_state.col_choice)
 input_type = None
 data = None
-input_type = st.selectbox("Data Upload",(".txt, .pdf or .epub","URL","YouTube"),index=None, placeholder="Choose File Type")
+input_type = st.selectbox("Data Upload",(".txt, .pdf or .epub","URL","YouTube"),index=None, placeholder="Choose File Type", disabled=st.session_state.good)
 
 if input_type == (".txt, .pdf or .epub"):
         filetypes = [

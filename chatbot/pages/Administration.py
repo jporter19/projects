@@ -47,8 +47,8 @@ def collection_delete_where(clause):
 def get_metadatas():
     return "Currently Unavailable"
 
-def add_test_doc():
-    st.session_state.working_col.add(
+def add_test_doc(col):
+    col.add(
     documents=["lorem ipsum..", "doc2", "doc3"],
     metadatas=[{"chapter": "3", "verse": "16"}, {"chapter": "3", "verse": "5"}, {"chapter": "29", "verse": "11"}],
     ids=["id1", "id2", "id3"]
