@@ -2,7 +2,7 @@ import chromadb
 import streamlit as st 
 import sys
 sys.path.append('b:\\code\\projects\\chatbot\\pages')
-from admin_2 import create_collection, delete_collection, change_name, db_collections
+from chroma_functions import create_collection, delete_collection, change_name, db_collections
 
 if 'col_choice' not in st.session_state:
     st.session_state['col_choice']=None

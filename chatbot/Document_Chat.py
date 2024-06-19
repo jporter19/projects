@@ -3,13 +3,13 @@
 import streamlit as st  # Streamlit is a package used for simple websites
 import chromadb         # Chroma Db is an open source vector database
 from find_distances_closest_to_one import closest_index
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.embeddings.sentence_transformer import (SentenceTransformerEmbeddings,)
-st.session_state.embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+from chroma_functions import db_collections
+#from langchain_huggingface import HuggingFaceEmbeddings
+from chromadb.utils import embedding_functions
+st.session_state.embeddings = embedding_functions.DefaultEmbeddingFunction()
+#from langchain_community.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+#st.session_state.embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 
-
-# st.page_link('admin_2.py',label="Admin Page")
-# st.page_link('pages/test2.py', label=":blue[test2 link]")
 ##%% ------------------------ Initialize Directory & Name for Primary DB ---------------------------
 st.session_state.dbpath="b:\\python\\database\\booboo" # set the path to the DB
 if 'col_choice' not in st.session_state:  #initialize selection of a collection
@@ -17,27 +17,14 @@ if 'col_choice' not in st.session_state:  #initialize selection of a collection
     st.session_state.good = True
 
 #%%
-# This function will produce a distinct list of collection to be displayed in drop down
-def my_collections(db):
-    collections = []
-    for i in range (db.count_collections()):
-        collections.append(db.list_collections()[i].name)
-    return collections
-
 def clear_expanders():
     st.session_state['prompt_res'] = dict()
 
 ##%%  ------------------  Open an Existing Chroma DB as a Client  -----------------------------
 run_client = chromadb.PersistentClient(path=st.session_state.dbpath)
-try:
-    run_client.get_collection(name="test")
-except Exception as err:
-    st.write(str(err))
 
-#st.session_state.col_choice = run_client.get_collection("test")
 # --------------------  This is a side bar collection pickter  ----------------------------
-#st.session_state.col_choice = st.sidebar.selectbox("Pick a Collection",my_collections(run_client),index=None)
-st.session_state.col_choice = st.selectbox("Pick a Collection",my_collections(run_client),index=None)
+st.session_state.col_choice = st.selectbox("Pick a Collection",db_collections(run_client),index=None)
 if st.session_state.col_choice == None:
     st.session_state.good = True
 else:
@@ -45,7 +32,10 @@ else:
 
 ##%%  ---------If a Collection is selected Create a LangChain Chroma instance  ------------------
 if st.session_state.col_choice:
-    working_collection = run_client.get_collection(st.session_state.col_choice)
+    try:
+        working_collection = run_client.get_collection(st.session_state.col_choice)
+    except Exception as err:
+        st.write(str(err))
 resp_cnt = st.slider(min_value=1,max_value=10,label="Set the Number of Response")
 
 ##%%  --------------- Main Program  -------------------------------
