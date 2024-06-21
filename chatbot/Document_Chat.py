@@ -14,26 +14,27 @@ st.session_state.embeddings = embedding_functions.DefaultEmbeddingFunction()
 st.session_state.dbpath="b:\\python\\database\\booboo" # set the path to the DB
 if 'col_choice' not in st.session_state:  #initialize selection of a collection
     st.session_state['col_choice']=None   # This could be set a default
-    st.session_state.good = True
+    st.session_state.good = True # If None, then buttons are disabled
+
 
 #%%
 def clear_expanders():
     st.session_state['prompt_res'] = dict()
 
 ##%%  ------------------  Open an Existing Chroma DB as a Client  -----------------------------
-run_client = chromadb.PersistentClient(path=st.session_state.dbpath)
+st.session_state.run_client = chromadb.PersistentClient(path=st.session_state.dbpath)
 
 # --------------------  This is a side bar collection pickter  ----------------------------
-st.session_state.col_choice = st.selectbox("Pick a Collection",db_collections(run_client),index=None)
+st.session_state.col_choice = st.selectbox("Pick a Collection",db_collections(st.session_state.run_client),index=None)
 if st.session_state.col_choice == None:
-    st.session_state.good = True
+    st.session_state.good = True # If None, then buttons are disabled
 else:
     st.session_state.good = False
 
-##%%  ---------If a Collection is selected Create a LangChain Chroma instance  ------------------
+##%%  ---------If a Collection is selected create a chroma DB collection instance  ------------------
 if st.session_state.col_choice:
     try:
-        working_collection = run_client.get_collection(st.session_state.col_choice)
+        st.session_state.working_collection = st.session_state.run_client.get_collection(st.session_state.col_choice)
     except Exception as err:
         st.write(str(err))
 resp_cnt = st.slider(min_value=1,max_value=10,label="Set the Number of Response")
@@ -49,7 +50,7 @@ with st.container():  # using a container pushes the input to the top of the pag
     if prompt: # if prompt has data then run this
         docs, res =[], []
         try:
-            res = working_collection.query(query_texts=prompt,n_results=resp_cnt)
+            res = st.session_state.working_collection.query(query_texts=prompt,n_results=resp_cnt)
             if resp_cnt > len(res['ids']):
                 resp_cnt = len(res['ids'])
             message="Query Results"
