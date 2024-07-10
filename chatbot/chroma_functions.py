@@ -1,5 +1,5 @@
 import chromadb
-import streamlit as st
+import streamlit as ss
 
 #--------------------------------------------  Collection Functions ------------------------------------------
 # This is designed to work with a Streamlit Button.  A Chroma db client is recieved as an argument, and a new collection name is
@@ -7,67 +7,70 @@ import streamlit as st
 
 def create_col(db):
     try:
-        db.create_collection(st.session_state.col_nm)
-        st.session_state.resp = "New Collection Created"
+        db.create_collection(ss.col_nm)
+        ss.resp = "New Collection Created"
     except:
-        st.session_state.resp = "This Collection Already Exists" 
+        ss.resp = "This Collection Already Exists" 
         
 def rename_col(col):
-    col.modify(st.session_state.renamer)
+    col.modify(ss.renamer)
 # -----------------------------   Set Working Collection -------------------------------
 # set the working collection to the name passed in colpick 
 def set_collection(db):
     try:
-        st.session_state.working_col=db.get_collection(st.session_state.colpick)
-        st.session_state.resp = "Collection Set" 
+        ss.working_collection=db.get_collection(ss.colpick)
+        ss.resp = "Collection Set" 
     except:
-        st.session_state.working_col = None
-        st.session_state.resp = "Error getting collection from Chroma" 
+        ss.working_collection = None
+        ss.resp = "Error getting collection from Chroma" 
 
 
 #---------------------------------------- Delete a Collection -------------------------------------
-def del_collection(db):
-    st.session_state.working_collection = st.empty()
-    db.delete_collection(st.session_state.col_choice)
-    '''if st.session_state.col_choice:
-        val=st.session_state.col_choice
-        st.session_state.col_choice=None
+def del_collection(db,to_del):
+    ss.working_collection = []
+    db.delete_collection(to_del)
+    '''if ss.col_choice:
+        val=ss.col_choice
+        ss.col_choice=None
         db.delete_collection(val)
-        st.session_state.resp =  "Collection Deleted"
+        ss.resp =  "Collection Deleted"
     else:
-        st.session_state.resp =  "No Collection Selected"'''
+        ss.resp =  "No Collection Selected"'''
 
 #---------------------------------------- Clear a Collection -------------------------------------
+def clear_data(col):
+    
+    pass
 
 
 #---------------------------------------- Collection Info -------------------------------------
 def collection_stats(col):
     if col == None:
-        st.session_state.resp =  "Collection Count Failed: " + str(err)
+        ss.resp =  "Collection Count Failed: " + str(err)
     try:
         cnt=col.count()
     except:
-        st.session_state.resp =  "Collection Count Failed: " + str(err)
+        ss.resp =  "Collection Count Failed: " + str(err)
     try:
         peek=col.peek(2)
     except:
-        st.session_state.resp =  "Collection Peek Failed: " + str(err)
+        ss.resp =  "Collection Peek Failed: " + str(err)
     return cnt, peek
 
 #---------------------------------------- List Collections in a DB -------------------------------------
 
 def collection_delete_where(col,clause):
-    st.session_state.resp =  "Currently Unavailable"
+    ss.resp =  "Currently Unavailable"
 
 def get_metadatas():
-    st.session_state.resp =  "Currently Unavailable"
+    ss.resp =  "Currently Unavailable"
 
 def add_test_doc(col):
     col.add(
     documents=["lorem ipsum..", "doc2", "doc3"],
     metadatas=[{"chapter": "3", "verse": "16"}, {"chapter": "3", "verse": "5"}, {"chapter": "29", "verse": "11"}],
     ids=["id1", "id2", "id3"])
-    st.session_state.resp =  "Three docuemnts added to collection"
+    ss.resp =  "Three docuemnts added to collection"
     
 def db_collections(db):
     collections = []
